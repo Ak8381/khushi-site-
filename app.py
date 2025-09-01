@@ -59,4 +59,4 @@ if user_reply:
             lines = "\n\n".join(lyrics_blocks[:st.session_state.lyrics_stage])
             st.info(lines)
     else:
-        st.write("Bas tumse baat karke hi accha lagta hai 💕")
+        st.ky acga lagta hai("Bas tumse baat karke hi accha lagta hai 💕")
