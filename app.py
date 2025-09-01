@@ -16,6 +16,7 @@ if "reasons" not in st.session_state:
     st.session_state.reason_index = 0
     st.session_state.no_count = 0
     st.session_state.lyrics_stage = 0
+    st.session_state.final_msg_shown = False
 
 lyrics_blocks = [
     """🎶 Tu hi meri shab hai  
@@ -39,24 +40,43 @@ Meri dil ki rait pe, aankhon ki jo padhe parchhai teri... ✨"""
 
 # Greeting
 st.write("Hello Khushi 👋, kaise ho?")
-user_reply = st.text_input("Aapka jawab likhiye:")
+user_reply = st.text_input("gusse mei mt likhna:")
 
 if user_reply:
-    if "hello" in user_reply.lower():
+    reply = user_reply.lower()  # converts input to lowercase for consistent checking
+
+    if "hello" in reply:
         st.write("Gussa ho kya? 😅")
-    elif user_reply.lower() == "yes":
+    elif reply == "yes":
         st.success(yes_message)
-    elif user_reply.lower() == "no":
+        st.session_state.no_count = 0
+        st.session_state.reason_index = 0
+        st.session_state.lyrics_stage = 0
+        st.session_state.final_msg_shown = False
+    elif reply == "no":
         st.session_state.no_count += 1
-        # 50th no special message
-        if st.session_state.no_count >= 50:
-            st.error("😢 Bacchhe ki jaan leni hai to ek baar mei le lo, yu ruth ke kyu thoda thoda maar rahi ho...")
+        
+        # 14th no special message
+        if st.session_state.no_count >= 14:
+            st.error("😢 Bacchhe ki jaan leni hai to ek baar mei le lo, yu ruth ke kyu thoda thoda maar rahi hoo...")
+        
+        # Show reasons first
         elif st.session_state.reason_index < len(st.session_state.reasons):
             st.warning(st.session_state.reasons[st.session_state.reason_index])
             st.session_state.reason_index += 1
-        else:
+        
+        # Show lyrics after reasons
+        elif st.session_state.lyrics_stage < len(lyrics_blocks):
             st.session_state.lyrics_stage += 1
             lines = "\n\n".join(lyrics_blocks[:st.session_state.lyrics_stage])
             st.info(lines)
+        
+        # Show final friendly message after all reasons & lyrics
+        else:
+            if not st.session_state.final_msg_shown:
+                st.success("Haan maloom hai, galti meri hai, maan jaoo n 😅 itna kyun gussa kar rahi ho…")
+                st.session_state.final_msg_shown = True
+            else:
+                st.write("Bas ab thoda khush ho jao 😄")
     else:
         st.write("Bas tumse baat karke hi accha lagta hai 💕")
